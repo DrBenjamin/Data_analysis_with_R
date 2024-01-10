@@ -80,3 +80,95 @@ ninetib <- tibble(vecnine = vecnine, ninewords = ninewords)
 dim(ninetib)
 # print the tibble
 ninetib
+
+
+
+################
+## Exercises ##
+################
+## Exercise 1
+# Exercise: "Use the code chunk below to calculate what 50 minus 8 is"
+50 - 8
+
+
+## Exercise 2
+# Exercise: "Create 3 new variables,  a,  b,  c with values 6, 7, 8 using the 
+# different assignment operators, and print the results"
+a <- 6
+b <- 7
+c <- 8
+a
+b
+c
+
+## Exercise 3
+# Exercise: "Carry out a calculation with saved variables:"
+# - Create 2 new variables,  x ,  y , with values 3, 10.
+# - Carry out a calculation using these variables (e.g.  x+y ).
+# - Save the value to an object called  calc.
+# - Print out the value of the variable to view the output.
+x <- 3
+y <- 10
+x + y
+calc <- x + y
+calc
+
+
+## Exercise 4: 
+## "Exploratory data analysis (graphical)"
+## Using the same dataset (NHANES) as in this week's worked examples, we will explore some different variables. 
+## Practise using R using the suggestions below, and pick one of them to write into a short post in the 
+## discussion board, including a short explanation, the R code and the output.
+# 1. Create a plot to explore the distribution of the Weight variable for individuals aged 18 or over, 
+#    separating male and female individuals.
+# 2. Create a plot to explore the covariation between the BMI and BPSys1 variables for female individuals 
+#    aged 50 and over, separating by Diabetes status.
+# 3. For any of the code you've written this week, write down the code you ran and an error message you got, 
+#    and how you fixed it (if you managed to).
+
+# Exercise 4.1
+# Creating a boxplot which shows the distribution of the Weight variable for individuals aged 18 or over,
+# grouped by Gender
+data %>%
+  filter(Age >= 18) %>%
+  ggplot(aes(x = Gender, y = Weight, color = Gender)) +
+    geom_boxplot()
+
+# Exercise 4.2
+# Creating a scatterplot which shows the distribution of BPSys1 (blood pressure),
+# by BMI (body mass index) grouped by Diabetes status (Yes or No))
+data %>%
+  filter(Age <= 50 & Gender == "female") %>%
+  drop_na(BMI, BPSys1, Diabetes) %>%
+  ggplot(aes(x = BMI, y = BPSys1, color = Diabetes)) +
+    geom_point()
+
+# Exercise 4.3
+# Not clear to me what this exercise is asking for.
+
+## Exercises 5
+## "Exploratory data analysis (numerical)"
+## Using the same dataset as in this week's worked examples, we will explore some different variables. 
+## Practise using R using the suggestions below, and pick one of them to write into a short post in the 
+## discussion board, including a short explanation, the R code and the output.
+# 1. Create a tibble for the BMI, DirectChol, and HHIncomeMid variables for female individuals aged 50 and over, 
+#    separating by Education. We want the mean and median for each variable.
+# 2. For any of the code you've written this week, write down the code you ran and an error message you got, 
+#    and how you fixed it (if you managed to).
+
+# Exercise 5.1
+# Creating a 
+data %>%
+  filter(Gender == "female" & Age >= 50) %>%
+  drop_na(BMI, DirectChol, HHIncomeMid, Education) %>%
+  mutate(BMI_mean = mean(BMI),
+         BMI_median = median(BMI),
+         DirectChol_mean = mean(DirectChol),
+         DirectChol_median = median(DirectChol),
+         HHIncomeMid_mean = mean(HHIncomeMid),
+         HHIncomeMid_median = median(HHIncomeMid)) %>%
+  select(BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median) %>%
+  ggplot(aes(x = c(BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median))) +
+    geom_bar()
+
+# Exercise 5.2

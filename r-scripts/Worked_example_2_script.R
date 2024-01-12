@@ -118,6 +118,3 @@ data %>%
   group_by(key, total, isna) %>%
   summarise(num.isna = n()) %>%
   select(num.isna)
-  
-  
-  

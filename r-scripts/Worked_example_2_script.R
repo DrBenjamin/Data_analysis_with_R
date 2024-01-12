@@ -75,8 +75,8 @@ table(data$Gender, data$AgeDecade)
 # Using the Tidyverse, create a table with counts and proportions for each 
 # combination of values from the Gender and AgeDecade variables
 data %>% 
-  drop_na(Gender,AgeDecade) %>%
-  count(Gender,AgeDecade) %>%
+  drop_na(Gender, AgeDecade) %>%
+  count(Gender, AgeDecade) %>%
   group_by(Gender) %>%
   mutate(prop = prop.table(n))
 
@@ -85,19 +85,39 @@ data %>%
 data %>% 
   drop_na(Weight) %>%
   select(ID,Weight) %>%
-  filter(Weight < mean(Weight)-3*sd(Weight) | Weight > mean(Weight)+3*sd(Weight))
+  filter(Weight < mean(Weight) - 3 * sd(Weight) | Weight > mean(Weight) + 3 *sd(Weight))
 
 # Save the value of the interquartile range into the IQR variable
 IQR <- data %>% 
   drop_na(Weight) %>%
-  summarize(value=quantile(Weight, probs = 0.75)-quantile(Weight, probs = 0.25)) %>%
+  summarize(value = quantile(Weight, probs = 0.75) - quantile(Weight, probs = 0.25)) %>%
   pull(value)
+is.vector(IQR)
+IQR
 
 # Get the potential outliers using the method of "more than 1.5 IQR below the 
 # 25th percentile or more than 1.5 IQR above the 75th percentile"
-data %>% 
+outliers <- data %>% 
   drop_na(Weight) %>%
-  select(ID,Weight) %>%
-  filter(Weight < quantile(Weight, probs = 0.25)-1.5*IQR | 
-           Weight > quantile(Weight, probs = 0.75)+1.5*IQR)
+  select(ID, Weight) %>%
+  filter(Weight < quantile(Weight, probs = 0.25) - 1.5 * IQR | 
+           Weight > quantile(Weight, probs = 0.75) + 1.5 * IQR)
+outliers
 
+# Empty values
+data %>%
+  summarize(countNA = sum(is.na(Weight)))
+
+# Empty values per column
+data %>%
+  select(Age, Weight, Height, BMI, PhysActive, DirectChol, BMI_WHO, AgeDecade, Education, Gender) %>%
+  gather(key = "key", value = "val") %>%
+  mutate(isna = is.na(val)) %>%
+  group_by(key) %>%
+  mutate(total = n()) %>%
+  group_by(key, total, isna) %>%
+  summarise(num.isna = n()) %>%
+  select(num.isna)
+  
+  
+  

@@ -1,9 +1,14 @@
 ### Course "Data analysis with R"
 ### Week 1
 ## Libraries
-pacman::p_load(tidyverse)
+pacman::p_load(tidyverse, NHANES)
+
 
 ## Loading data
+data <- NHANES
+
+
+## Data exploration
 # Piped functions
 esoph %>%
   filter(agegp == "65-74") %>%     # only keep rows where age group is 65 to 74
@@ -146,7 +151,8 @@ data %>%
 # Exercise 4.3
 # Not clear to me what this exercise is asking for.
 
-## Exercises 5
+
+## Exercises 5:
 ## "Exploratory data analysis (numerical)"
 ## Using the same dataset as in this week's worked examples, we will explore some different variables. 
 ## Practise using R using the suggestions below, and pick one of them to write into a short post in the 
@@ -157,18 +163,20 @@ data %>%
 #    and how you fixed it (if you managed to).
 
 # Exercise 5.1
-# Creating a 
+# Creating a tibble with the described parameters
 data %>%
   filter(Gender == "female" & Age >= 50) %>%
   drop_na(BMI, DirectChol, HHIncomeMid, Education) %>%
+  group_by(Education) %>%
   mutate(BMI_mean = mean(BMI),
          BMI_median = median(BMI),
          DirectChol_mean = mean(DirectChol),
          DirectChol_median = median(DirectChol),
          HHIncomeMid_mean = mean(HHIncomeMid),
          HHIncomeMid_median = median(HHIncomeMid)) %>%
-  select(BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median) %>%
-  ggplot(aes(x = c(BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median))) +
-    geom_bar()
-
+  select(BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median, Education) %>%
+  group_by(Education, BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median) %>%
+  summarize()
+  
 # Exercise 5.2
+# Not clear to me what this exercise is asking for.

@@ -117,4 +117,17 @@ data %>%
   mutate(total = n()) %>%
   group_by(key, total, isna) %>%
   summarise(num.isna = n()) %>%
+  filter(isna == TRUE) %>%
   select(num.isna)
+
+data %>%
+  select(Age, Weight, Height, BMI, PhysActive, DirectChol, BMI_WHO, AgeDecade, Education, Gender) %>%
+  gather(key = "key", value = "val") %>%
+  mutate(isna = is.na(val)) %>%
+  group_by(key) %>%
+  mutate(total = n()) %>%
+  group_by(key, total, isna) %>%
+  summarise(num.isna = n(), .groups = 'drop') %>%
+  complete(key, isna, fill = list(total = 10000, num.isna = 0)) %>%
+  filter(isna == TRUE) %>%
+  select(key, total, num.isna)  

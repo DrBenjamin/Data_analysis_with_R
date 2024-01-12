@@ -104,22 +104,11 @@ outliers <- data %>%
            Weight > quantile(Weight, probs = 0.75) + 1.5 * IQR)
 outliers
 
-# Empty values
+# Show missing values of variable `weight`
 data %>%
   summarize(countNA = sum(is.na(Weight)))
 
-# Empty values per column
-data %>%
-  select(Age, Weight, Height, BMI, PhysActive, DirectChol, BMI_WHO, AgeDecade, Education, Gender) %>%
-  gather(key = "key", value = "val") %>%
-  mutate(isna = is.na(val)) %>%
-  group_by(key) %>%
-  mutate(total = n()) %>%
-  group_by(key, total, isna) %>%
-  summarise(num.isna = n()) %>%
-  filter(isna == TRUE) %>%
-  select(num.isna)
-
+# Show missing values per column / variable
 data %>%
   select(Age, Weight, Height, BMI, PhysActive, DirectChol, BMI_WHO, AgeDecade, Education, Gender) %>%
   gather(key = "key", value = "val") %>%

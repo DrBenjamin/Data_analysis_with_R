@@ -119,4 +119,4 @@ data %>%
   summarise(num.isna = n(), .groups = 'drop') %>%
   complete(key, isna, fill = list(total = 10000, num.isna = 0)) %>%
   filter(isna == TRUE) %>%
-  select(key, total, num.isna)
+  select(key, total, num.isna)  

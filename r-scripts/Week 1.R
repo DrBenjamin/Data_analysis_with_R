@@ -177,6 +177,6 @@ data %>%
   select(BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median, Education) %>%
   group_by(Education, BMI_mean, BMI_median, DirectChol_mean, DirectChol_median, HHIncomeMid_mean, HHIncomeMid_median) %>%
   summarize()
-  
+
 # Exercise 5.2
 # Not clear to me what this exercise is asking for.

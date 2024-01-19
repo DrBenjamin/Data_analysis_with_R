@@ -99,3 +99,17 @@ cont_tab3 %>%
 ## 1. Import the following csv file, a subset of the NHANES dataset:
 ## `subsetNHANES_exercise_week2.csv`
 sub_data <- read_csv(here("raw_data", "subsetNHANES_exercise_week2.csv"))
+# We will use that dataset for all subsequent questions.
+
+
+## 2. Explore the distribution of the BMI variable visually and statistically.
+
+
+## 3. If the distribution is not normal, find a transformation that makes 
+## the distribution look more normal.
+
+
+## 4. If we split this variable by Gender, are the two variances equal?
+
+
+## 5. Is the relationship between Age and DirectChol linear?

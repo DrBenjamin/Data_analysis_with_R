@@ -1,3 +1,6 @@
+### Course `Data analysis with R`
+### Week 1 Exercises
+### © Benjamin Gross, S2616861
 ## Load the tidyverse and NHANES packages
 library(tidyverse)
 library(NHANES)

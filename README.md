@@ -1,2 +1,2 @@
-# Data_analysis_with_R
-Course data analysis with R
+# Studies: *Data Science for Health and Social Care*
+Course `Data analysis with R`

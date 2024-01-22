@@ -57,3 +57,13 @@ data_tibble %>%
 data_tibble %>%
   tbl_cross(row = Gender, col = PhysActive, percent = "row") %>%
   bold_labels()
+
+
+## Odds ratio
+chillidata <- tibble(
+  GastricCancer = c(rep("Yes",500),rep("No",500)),
+  ExposureChilli = c(rep("Yes",476),rep("No",24),rep("Yes",275),rep("No",225)))
+
+chillidata %>%
+  table() %>%
+  fisher.test()

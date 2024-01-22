@@ -88,12 +88,7 @@ cont_tab3 %>%
 ## Using the NHANES dataset:
 ## 1. Calculate the CI for the proportion of each combination of Diabetes 
 ## and HealthGen categories
- NHANES %>%
-  select(Diabetes, HealthGen) %>%
-  drop_na() %>%
-  table()
-
-cont_tab4 <- NHANES %>%
+NHANES %>%
   drop_na(Diabetes, HealthGen) %>%
   group_by(Diabetes) %>%
   count(HealthGen) %>%
@@ -103,7 +98,6 @@ cont_tab4 <- NHANES %>%
          lower_ci = prop.test(n, Total, conf.level = 0.95)$conf.int[1],
          upper_ci = prop.test(n, Total, conf.level = 0.95)$conf.int[2])
 
-cont_tab4
 
 ## 2. Calculate the CI for the difference in proportions of individuals 
 ## with very good health between individuals with diabetes and individuals 
@@ -112,9 +106,9 @@ NHANES %>%
   drop_na(Diabetes, HealthGen) %>%  # Remove rows with missing Diabetes or HealthGen value
   group_by(Diabetes) %>%            # Group by Diabetes status (Yes or No), so the counts are calculated separately for each category
   count(HealthGen) %>%              # Count the number of rows for each combination of variable values (e.g. No diabetes and Excellent health, No diabetes and Vgood health, etc.)
-  mutate(Total = sum(n)) %>%       # Create a new column named Total with the total number of observations for each Diabetes category
-  filter(HealthGen == "Vgood") %>% # Only keep rows where the value of HealthGen is Vgood
-  ungroup() %>%                    # Ungroup the tibble, so it "forgets" about the other values of HealthGen
+  mutate(Total = sum(n)) %>%        # Create a new column named Total with the total number of observations for each Diabetes category
+  filter(HealthGen == "Vgood") %>%  # Only keep rows where the value of HealthGen is Vgood
+  ungroup() %>%                     # Ungroup the tibble, so it "forgets" about the other values of HealthGen
   mutate(hasDiabetes = Diabetes == "Yes") %>% # Create a new logical column named hasDiabetes which is TRUE if Diabetes is "Yes" and FALSE otherwise
   summarise(prop_diabetes = n[hasDiabetes]/Total[hasDiabetes], # Create a new column called prop_diabetes by dividing the number of people with Diabetes and Vgood health status by the total number of people with Diabetes
             prop_noDiabetes = n[!hasDiabetes]/Total[!hasDiabetes], # Create a new column called prop_noDiabetes by dividing the number of people without Diabetes and with Vgood health status by the total number of people without Diabetes
@@ -137,11 +131,21 @@ NHANES %>%
 ## Using the NHANES dataset:
 ## 1. Test whether the mean BMI of individuals with Good or Very good general 
 ## health is different from 21.5.
+NHANES %>%
+  drop_na(BMI) %>%
+  filter(HealthGen == "Good" | HealthGen == "Vgood") %>%
+  t.test(.$BMI, mu = 21.5, data = .)
 
 
 ## 2. Test whether individuals with very good general health and individuals 
 ## with fair general health have the same mean BMI.
-
+NHANES %>%
+  drop_na(BMI) %>%
+  filter(HealthGen == "Vgood" | HealthGen == "Fair") %>%
+  summarise(t_stat = t.test(BMI~HealthGen)$statistic,
+            pval = t.test(BMI~HealthGen)$p.value,
+            lowerCI = t.test(BMI~HealthGen)$conf.int[1],
+            upperCI = t.test(BMI~HealthGen)$conf.int[2])
 
 
 ###################################################
@@ -149,18 +153,84 @@ NHANES %>%
 ###################################################
 ## 1. Import the following csv file, a subset of the NHANES dataset:
 ## `subsetNHANES_exercise_week2.csv`
-sub_data <- read_csv(here("raw_data", "subsetNHANES_exercise_week2.csv"))
+subsetNHANES <- read_csv(here("raw_data", "subsetNHANES_exercise_week2.csv"))
 # We will use that dataset for all subsequent questions.
 
 
 ## 2. Explore the distribution of the BMI variable visually and statistically.
+# Create a Height_stats object with the mean and median of the Height variable
+BMI_stats <- subsetNHANES %>%
+  summarise(mean = mean(BMI), median = median(BMI))
+
+# Histogram with density and mean & median lines
+subsetNHANES %>%
+  ggplot(aes(x = BMI)) +
+    geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+    geom_density(aes(y = ..density..)) +
+    geom_vline(xintercept = mean(BMI_stats$mean), color = "blue", size = 1) +
+    geom_vline(xintercept = median(BMI_stats$median), color = "orange", size = 1)
+
+# Q-Q plot (quantile-quantile plot)
+subsetNHANES %>%
+  ggplot(aes(sample = BMI)) +
+    stat_qq() +
+    stat_qq_line(color = 2) +
+    labs(title = "Normal Q-Q Plot") +    ## add title
+    theme_bw() +                         ## remove gray background
+    theme(panel.grid = element_blank())  ## remove grid
+
+# Shapiro-Wilk's test
+subsetNHANES %>%
+  pull(BMI) %>%
+  shapiro.test()
 
 
 ## 3. If the distribution is not normal, find a transformation that makes 
 ## the distribution look more normal.
+# Log transformation
+subsetNHANES %>%
+  mutate(BMI = log(BMI)) %>%
+  ggplot(aes(x = BMI)) +
+    geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+    geom_density(aes(y = ..density..))
+
+# Square-root transformation    
+subsetNHANES %>%
+  mutate(BMI = sqrt(BMI)) %>%
+  ggplot(aes(x = BMI)) +
+  geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+  geom_density(aes(y = ..density..))
+
+# Square transformation
+subsetNHANES %>%
+  mutate(BMI = BMI^2) %>%
+  ggplot(aes(x = BMI)) +
+  geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+  geom_density(aes(y = ..density..))
 
 
 ## 4. If we split this variable by Gender, are the two variances equal?
+subsetNHANES %>%
+  drop_na(Gender) %>%
+  mutate(BMI = BMI^(-1/3)) %>%
+  var.test(BMI ~ Gender, ., alternative = "two.sided")
+
+# Histogram with density and mean & median lines split for gender
+subsetNHANES %>%
+  drop_na(Gender) %>%
+  ggplot(aes(x = BMI)) +
+    geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+    geom_density(aes(y = ..density..)) +
+    geom_vline(xintercept = mean(BMI_stats$mean), color = "blue", size = 1) +
+    geom_vline(xintercept = median(BMI_stats$median), color = "orange", size = 1) +
+    facet_wrap(~Gender)
 
 
 ## 5. Is the relationship between Age and DirectChol linear?
+subsetNHANES %>%
+  drop_na(Age, DirectChol) %>%
+  ggplot(aes(x = Age, y = DirectChol)) +
+    geom_point() +
+    geom_smooth(method = lm) +
+    xlab("Age (years)") +
+    ylab("DirectChol")

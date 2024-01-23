@@ -1,0 +1,15 @@
+Sex,Age Group,HospitalDeaths,HospitalPopulation,StandardDeaths,StandardPopulation
+Male,20-29,3,15,900,4522
+Male,30-39,5,22,902,5001
+Male,40-49,12,30,1980,10998
+Male,50-59,19,47,2580,17201
+Male,60-69,24,62,4174,18143
+Male,70-79,11,66,4118,17160
+Male,80+,8,45,4620,11550
+Female,20-29,4,8,449,2997
+Female,30-39,8,17,320,3205
+Female,40-49,11,29,2841,15787
+Female,50-59,14,50,3523,16782
+Female,60-69,18,64,3400,14788
+Female,70-79,7,58,3009,15840
+Female,80+,5,46,372,932

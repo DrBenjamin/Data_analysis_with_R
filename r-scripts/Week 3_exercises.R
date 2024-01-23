@@ -6,6 +6,6 @@ pacman::p_load(tidyverse, epitools, finalfit, gtsummary, here, broom, NHANES)
 
 
 
-##############################################################
-### Cross-tabulations and Chi-square / Fisher's exact test ###
-##############################################################
+##############################
+### Non-parametric Methods ###
+##############################

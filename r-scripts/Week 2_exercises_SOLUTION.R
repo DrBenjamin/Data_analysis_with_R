@@ -189,7 +189,7 @@ subsetNHANES <- NHANES %>%
   drop_na(BMI) %>%
   sample_n(1000)
 #write_csv(subsetNHANES, "subsetNHANES_exercise_week2.csv")
-subsetNHANES <- read_csv("subsetNHANES_exercise_week2.csv")
+subsetNHANES <- read_csv("./raw_data/subsetNHANES_exercise_week2.csv")
 
 subsetNHANES %>%
   ggplot(aes(sample=BMI)) +

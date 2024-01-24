@@ -33,7 +33,7 @@ NHANES %>%
 
 NHANES %>%  t.test(.$Weight~.$Gender,data=.)
 
-## Non-parametric analog = 2 sample Wilcoxon Rank Sum or Mann-Whitney test
+## Non-parametric analog = 2 sample Wilcox Rank Sum or Mann-Whitney test
 NHANES %>%  wilcox.test(.$Weight~.$Gender,data=.,conf.int=T)
 
 

@@ -29,3 +29,46 @@ NHANES %>%
 
 NHANES %>%
   wilcox.test(.$Weight ~ .$Gender, data = ., conf.int = TRUE)
+
+
+## A new test, possibly cheaper than existing options, to detect the presence 
+## of Helicobacter pylori is being developed. In the sample of individuals 
+## tested (drawn from the attenders of adyspepsia clinic in Glasgow), 
+## diagnosis was confirmed by endoscopic biopsy. The data are in the file: 
+## Helicobacter.csv. Test is coded as 0 for negative and 1 for positive. Biopsy 
+## is coded as 0 if H. pylori is absent and 1 if H. pylori is present
+## 1.Calculate appropriate summary measures for test performance and describe 
+## the test’s performance in this population.
+install.packages("reportROC")
+library(reportROC)
+#Binary
+Helicobacter <- read_csv(here("raw_data", "Helicobacter.csv"))
+with(Helicobacter, table(Test,Biopsy))
+
+reportROC(gold = Helicobacter$Biopsy, predictor.binary = Helicobacter$Test,plot=F,positive='l')
+#with prevalence 60% (1269 *0.6 = 761)
+
+
+
+Helicobacter60 <- tibble(testpositive = c(rep("1",794),rep("0",475)),biopsy = c(rep("1",708),rep("0",86),rep("1",53),rep("0",422)))
+with(Helicobacter60, table(testpositive,biopsy))
+reportROC(gold = Helicobacter60$biopsy, predictor.binary = Helicobacter60$testpositive,plot=F,positive='l')
+
+
+
+#continuous
+AnginaMI <- read_csv("AnginaMI.csv")
+AnginaMI %>%
+  ggplot(aes(y=CreatineKinase,x=Diagnosis))+
+  geom_boxplot()
+
+reportROC(gold = AnginaMI$DiagnosisCat, predictor = AnginaMI$CreatineKinase,plot=T,positive='l')
+
+# b) boxplot
+AnginaMI %>%
+  ggplot(aes(y=CreatineKinase,x=Diagnosis))+
+  geom_boxplot(outlier.shape = NA)
+
+
+## 2.b) What would you estimate the PPV and NPV of the test to be if it was 
+## applied in London, if the prevalence of H. pylori was about 60% there?

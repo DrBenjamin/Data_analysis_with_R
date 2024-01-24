@@ -4,7 +4,7 @@
 pacman::p_load(tidyverse, finalfit, gtsummary, here, NHANES)
 
 
-## Histogramm
+## Histogram
 NHANES %>%
   ggplot(aes(x = Age)) +
   geom_histogram(aes(y = ..count.., fill = ..density..), bins = 20)

@@ -19,50 +19,70 @@ pacman::p_load(tidyverse, epitools, finalfit, gtsummary, here, broom, NHANES)
 ## `Very Good` general health is different from `21.5`
 data <- NHANES
 NHANES %>%
+  drop_na(BMI, HealthGen) %>%
   filter(HealthGen == "Good" | HealthGen == "Vgood") %>%
   select(HealthGen, BMI) %>%
-  drop_na() %>%
   wilcox.test(.$BMI, mu = 21.5, data = ., conf.int = TRUE)
 
 
 ## 2. Are the BMI of individuals with `Very Good` general health drawn from a
 ## different distribution to those individuals with `Fair` general health?
-NHANES %>%
-  filter(HealthGen == "Fair" | HealthGen == "Vgood") %>%
-  select(HealthGen, BMI) %>%
-  drop_na() %>%
-  wilcox.test(BMI ~ HealthGen, data = ., conf.int = TRUE)
-# Compares the median, the median is different, CI is pseudo median
-
-subsetNHANES<-NHANES %>% 
+# Creating the subset of the data
+subsetNHANES <- NHANES %>% 
   drop_na(BMI, HealthGen) %>% 
   select(BMI, HealthGen) %>% 
   filter(HealthGen == "Vgood" | HealthGen == "Fair")
 
-Height_stats <- subsetNHANES %>%
-  summarise(mean = mean(BMI), median = median(BMI))
-
-# Showing the median
-subsetNHANES%>% 
-  drop_na(BMI) %>% 
-  group_by(HealthGen) %>% 
-  summarise(median(BMI), sd(BMI))
-
+# Calculating the mean, median and standard deviation of the BMI
 subsetNHANES %>%
-  ggplot(aes(x=BMI)) +
-    geom_histogram(aes(y=..density.., fill=..count..),bins=30) +
-    geom_vline(xintercept=mean(Height_stats$mean),color="blue",size=1) +
-    geom_vline(xintercept=median(Height_stats$median),color="orange",size=1)+
-    facet_grid(cols = vars(HealthGen)) + ylab("Density")
+  group_by(HealthGen) %>% 
+  summarise(mean = mean(BMI), median = median(BMI), sd(BMI))
+
+# Showing histogram for both health conditions 
+subsetNHANES %>%
+  group_by(HealthGen) %>%
+  mutate(med_BMI = round(median(as.numeric(BMI)), 2), mean_BMI = round(mean(as.numeric(BMI)), 2)) %>%
+  ggplot(aes(x = BMI)) +
+    geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+    ylab(label = "Density") +
+    facet_grid(cols = vars(HealthGen)) +
+      geom_vline(aes(xintercept = mean_BMI), color = "blue", linewidth = 1) +
+      geom_vline(aes(xintercept = med_BMI), color = "orange", linewidth = 1) +
+      geom_text(aes(x = 40, y = 0.07, label = paste0("Mean: ", mean_BMI)), color = "blue") +
+      geom_text(aes(x = 40, y = 0.067, label = paste0("Median: ", med_BMI)), color = "orange")
+
+# Performing the Wilcox test
+subsetNHANES %>%
+  wilcox.test(BMI ~ HealthGen, data = ., conf.int = TRUE)
+# Compares the median, the median is different, CI is pseudo median
 
 
 ## B: For the subset NHANES data (subsetNHANES_exercise_week2.csv)
 ## 1. Are the BMI of men and women plausibly drawn from the same 
 ## underlying distribution?
+subNHANES <- read_csv(here("raw_data", "subsetNHANES_exercise_week2.csv")) %>%
+  drop_na(BMI, Gender) %>%
+  select(BMI, Gender)
 
-## Post a brief summary of your results on the discussion board - do you get 
-## similar numerical results as others? Do you agree with the interpretation 
-## others have given? Share any other thoughts or code tips too.
+# Calculating mean and median for the BMI of both sexes
+subNHANES %>%
+  group_by(Gender) %>%
+  summarise(mean = mean(BMI), median = median(BMI))
+
+# Showing histogram for both sexes
+subNHANES %>%
+  group_by(Gender) %>%
+  mutate(med_BMI = round(median(as.numeric(BMI)), 2), mean_BMI = round(mean(as.numeric(BMI)), 2)) %>%
+  ggplot(aes(x = BMI)) +
+    geom_histogram(aes(y = ..density.., fill = ..count..), bins = 30) +
+    facet_grid(~Gender) +
+      geom_vline(aes(xintercept = mean_BMI), color = "blue", linewidth = 1) +
+      geom_vline(aes(xintercept = med_BMI), color = "orange", linewidth = 1)
+      
+# Performing Wilcox test
+subNHANES %>%
+  group_by(Gender) %>%
+  wilcox.test(BMI ~ Gender, data = ., conf.int = TRUE)
 
 
 
@@ -70,8 +90,10 @@ subsetNHANES %>%
 ### Standardisation ###
 #######################
 ## 1. Using the French prostate cancer data, calculate a standardised rate of 
-## prostate cancer (`Prostate Cancer.csv`) in the 1994-96 period, again using the 1985-87 period as 
-## the standard French population
+## prostate cancer (`Prostate Cancer.csv`) in the 1994-96 period, again using 
+## the 1985-87 period as the standard French population
+prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
+
 
 
 ## 2. The file `ICU Data.csv` contains age and sex-specific figures for mortality 

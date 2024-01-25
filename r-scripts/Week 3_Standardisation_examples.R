@@ -15,8 +15,8 @@ library(epitools)
 # numbers of 1000s person years at risk.
 # Use 1985-87 as the standard population.
 # Calculate standardised rates of prostate cancer incidence for 1979-81...
-prostate<-read_csv(file ="Prostate Cancer.csv",col_names = T)
-with(prostate,ageadjust.direct(count = `PC79-81`,pop = `Pop79-81`,stdpop = `Pop85-87`))
+prostate <- read_csv(file = "Prostate Cancer.csv", col_names = TRUE)
+with(prostate, ageadjust.direct(count = `PC79-81`, pop = `Pop79-81`, stdpop = `Pop85-87`))
 # The function uses the numbers of PC cases (count=) and the number of 1000 pyar (pop=)
 # to calculate age-specific rates, then applies these to the standard population figures (stdpop=).
 # Each age-stratum figure is added together to get the overall standardised rate, and a confidence
@@ -31,9 +31,9 @@ with(prostate,ageadjust.direct(count = `PC79-81`,pop = `Pop79-81`,stdpop = `Pop8
 # The data file (Oncho.csv) lists numbers of deaths and numbers of person-years at risk for the groups with and
 # without blindness - the latter group is larger, with more deaths, so let's use this as the standard 
 # population, and indirect standardise mortality in the smaller group with blindness to the larger group.
-oncho<-read_csv(file ="Oncho.csv",col_names = TRUE)
+oncho <- read_csv(file = "Oncho.csv", col_names = TRUE)
 
-with(oncho,ageadjust.indirect(count = DeathsBlind,pop = PYARBlind,stdcount = DeathsNon,stdpop = PYARNon))
+with(oncho, ageadjust.indirect(count = DeathsBlind, pop = PYARBlind, stdcount = DeathsNon, stdpop = PYARNon))
 # Here, the parameters represent deaths (count = ) and population sizes (pop = ), with an obvious nomenclature
 # to distinguish between our study population of interest and the standard population from which we calculate
 # age/ sex specific mortality rates.
@@ -42,4 +42,3 @@ with(oncho,ageadjust.indirect(count = DeathsBlind,pop = PYARBlind,stdcount = Dea
 # deaths in the Blind group (in this case - may sometimes be incidence, hence the SIR terminology), 
 # then the SMR (listed as sir), then a confidence interval for SMR. The $rate line expresses the results 
 # in terms of the crude and adjusted mortality rates within the Blind group (with a CI for the adjusted).
-

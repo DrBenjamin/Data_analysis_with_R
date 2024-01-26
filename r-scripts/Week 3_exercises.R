@@ -93,7 +93,19 @@ subNHANES %>%
 ## prostate cancer (`Prostate Cancer.csv`) in the 1994-96 period, again using 
 ## the 1985-87 period as the standard French population
 prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
+with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`, 
+                                  stdpop = `Pop85-87`))
 
+# Output: 
+# crude.rate adj.rate        lci        uci 
+# 2.382100   2.386850   2.357075   2.416946
+#
+# Interpretation:
+# Direct standardization method is used to calculate the standardized rate of 
+# prostate cancer in the 1994-96 period. The age-specific rates of the 1994-96 
+# period is applied to the 1985-87 population as the standard population. 
+# The crude and standardized rates of prostate cancer is very similar, 2.38 per 
+# 1000 person-years, suggesting the age structure of the two populations are very similar. 
 
 
 ## 2. The file `ICU Data.csv` contains age and sex-specific figures for mortality 
@@ -104,6 +116,23 @@ prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
 ## s4be.cochrane.org, but please note there appears to be an error in the
 ## calculation of the total expected number of deaths for the hospital of 
 ## interest on this page.)
+ICUdata <- read_csv(here("raw_data", "ICU Data.csv"))
+with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulation, 
+                                     stdcount = StandardDeaths, stdpop = StandardPopulation))
+# Output:
+# $sir
+# observed         exp         sir         lci         uci 
+# 149.0000000 130.2102220   1.1443034   0.9745588   1.3436134 
+# 
+# $rate
+# crude.rate   adj.rate        lci        uci 
+# 0.2665474  0.2451625  0.2087954  0.2878639 
+#
+# Interpretation:
+# Standardized mortality ration (SMR): 1,144 (95% CI: 0.97 - 1.34)
+# The mortality rate in the specific hospital of interest is slightly higher 
+# than the overall ICU population. Given that the confidence intervals include 1
+# we can conclude that this is not a statistically significant difference.
 
 
 

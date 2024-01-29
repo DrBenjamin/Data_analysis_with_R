@@ -17,7 +17,14 @@ pacman::p_load(tidyverse, epitools, finalfit, gtsummary, here, broom, NHANES)
 ## A. For the NHANES data:
 ## 1. Test whether the median BMI of individuals with either `Good` or 
 ## `Very Good` general health is different from `21.5`
+# Showing the course script(s)
+browseURL(here("meta_data", "Non-parametric Methods - Introduction.pdf"))
+browseURL(here("meta_data", "Non-parametric Methods - Caveats.pdf"))
+
+# Loading data into variable
 data <- NHANES
+
+# Performing the Wilcox test
 NHANES %>%
   drop_na(BMI, HealthGen) %>%
   filter(HealthGen == "Good" | HealthGen == "Vgood") %>%
@@ -92,8 +99,9 @@ subNHANES %>%
 ## 1. Using the French prostate cancer data, calculate a standardised rate of 
 ## prostate cancer (`Prostate Cancer.csv`) in the 1994-96 period, again using 
 ## the 1985-87 period as the standard French population
+# Showing the course script(s)
+browseURL(here("meta_data", "Essential_Medical_Statistics_25_Standardization.pdf"))
 prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
-
 
 
 ## 2. The file `ICU Data.csv` contains age and sex-specific figures for mortality 
@@ -116,6 +124,8 @@ prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
 ## plotted in a ROC curve.
 ## The exercise `Practical Exercise.pdf`
 ## Data `Helicobacter.csv` and `AnginaMI.csv`
+browseURL(here("meta_data", "DT - Basic Principles.pdf"))
+
 
 
 ## Post a brief summary of your results on the discussion board - do you get 

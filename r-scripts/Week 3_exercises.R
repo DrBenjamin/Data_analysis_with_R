@@ -2,7 +2,7 @@
 ### Week 3 Exercises
 ### © Benjamin Gross, S2616861
 ## Libraries
-pacman::p_load(tidyverse, epitools, finalfit, gtsummary, here, broom, NHANES)
+pacman::p_load(tidyverse, epitools, reportROC, finalfit, gtsummary, here, broom, NHANES)
 
 
 
@@ -67,7 +67,7 @@ subsetNHANES %>%
 ## B: For the subset NHANES data (subsetNHANES_exercise_week2.csv)
 ## 1. Are the BMI of men and women plausibly drawn from the same 
 ## underlying distribution?
-subNHANES <- read_csv(here("raw_data", "subsetNHANES_exercise_week2.csv")) %>%
+subNHANES <- read_csv(file = here("raw_data", "subsetNHANES_exercise_week2.csv")) %>%
   drop_na(BMI, Gender) %>%
   select(BMI, Gender)
 
@@ -103,7 +103,7 @@ subNHANES %>%
 browseURL(here("meta_data", "Essential_Medical_Statistics_25_Standardization.pdf"))
 
 # Loading the data
-prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
+prosCancer <- read_csv(file = here("raw_data", "Prostate Cancer.csv"))
 
 # Performing age adjust
 with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`, 
@@ -130,7 +130,7 @@ with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`,
 ## calculation of the total expected number of deaths for the hospital of 
 ## interest on this page.)
 # Loading the data
-ICUdata <- read_csv(here("raw_data", "ICU Data.csv"))
+ICUdata <- read_csv(file = here("raw_data", "ICU Data.csv"))
 
 # Performing age adjust
 with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulation, 
@@ -162,13 +162,30 @@ with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulatio
 ## plotted in a ROC curve.
 ## The exercise `Practical Exercise.pdf`
 ## Data `Helicobacter.csv` and `AnginaMI.csv`
+# Showing the course script(s)
 browseURL(here("meta_data", "DT - Basic Principles.pdf"))
+browseURL(here("meta_data", "Statistical Aspects of Diagnostic Tests - Solutions.pdf"))
 
+# Loading data
+helico <- read_csv(file = here("raw_data", "Helicobacter.csv"), col_names = T)
+
+# Performing tests
+with(helico, table(Test, Biopsy))
+reportROC(gold = helico$Biopsy,predictor.binary = helico$Test, plot = FALSE, positive = 'l')
+
+# New PPV and NPV obtained from formulas in lecture
+sens <- 0.93
+spec <- 0.832
+prev <- 0.6
+ppv <- (sens * prev) / (sens * prev + (1 - spec) * (1 - prev))
+npv <- (spec * (1 - prev)) / (spec * (1 - prev) + (1 - sens) * prev)
+cbind(PPV = ppv, NPV = npv)
 
 
 ## Post a brief summary of your results on the discussion board - do you get 
 ## similar numerical results as others? Do you agree with the interpretation 
 ## others have given? Share any other thoughts or code tips too.
+
 
 
 ##########################################################
@@ -180,3 +197,16 @@ browseURL(here("meta_data", "DT - Basic Principles.pdf"))
 ## The first question asks you to do another calculation in R, using the 
 ## following data set `HIV.csv`
 ## Questions 2-4 are paper/ interpretation exercises.
+# Showing the course script(s)
+browseURL(here("meta_data", "Additional Examples.pdf"))
+
+# Loading the data
+angina <- read_csv(file = here("raw_data", "AnginaMI.csv"), col_names = TRUE)
+
+# Creatine Kinase is very skewed, so easier to see what's going on on the log scale
+angina %>%
+  ggplot(aes(y = log(CreatineKinase), x = Diagnosis)) +
+  geom_boxplot()
+
+# Large values of Cr Ki associated with AMI, so positive="l". NB Analysis doesn't need to be on log scale!
+reportROC(gold = angina$DiagnosisCat,predictor = angina$CreatineKinase, plot = TRUE, positive = 'l')

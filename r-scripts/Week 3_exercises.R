@@ -164,6 +164,8 @@ with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulatio
 ## Data `Helicobacter.csv` and `AnginaMI.csv`
 # Showing the course script(s)
 browseURL(here("meta_data", "DT - Basic Principles.pdf"))
+browseURL(here("meta_data", "DT - Predictive Valuess.pdf"))
+browseURL(here("meta_data", "DT - ROC.pdf"))
 browseURL(here("meta_data", "Statistical Aspects of Diagnostic Tests - Solutions.pdf"))
 
 # Loading data

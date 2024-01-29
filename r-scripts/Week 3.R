@@ -43,32 +43,52 @@ install.packages("reportROC")
 library(reportROC)
 #Binary
 Helicobacter <- read_csv(here("raw_data", "Helicobacter.csv"))
-with(Helicobacter, table(Test,Biopsy))
+with(Helicobacter, table(Test, Biopsy))
 
-reportROC(gold = Helicobacter$Biopsy, predictor.binary = Helicobacter$Test,plot=F,positive='l')
+reportROC(gold = Helicobacter$Biopsy, predictor.binary = Helicobacter$Test,plot = FALSE, positive = 'l')
 #with prevalence 60% (1269 *0.6 = 761)
 
 
 
-Helicobacter60 <- tibble(testpositive = c(rep("1",794),rep("0",475)),biopsy = c(rep("1",708),rep("0",86),rep("1",53),rep("0",422)))
-with(Helicobacter60, table(testpositive,biopsy))
-reportROC(gold = Helicobacter60$biopsy, predictor.binary = Helicobacter60$testpositive,plot=F,positive='l')
+Helicobacter60 <- tibble(testpositive = c(rep("1",794), rep("0",475)), biopsy = c(rep("1",708), rep("0",86), rep("1",53), rep("0",422)))
+with(Helicobacter60, table(testpositive, biopsy))
+reportROC(gold = Helicobacter60$biopsy, predictor.binary = Helicobacter60$testpositive, plot = FALSE, positive = 'l')
 
 
 
 #continuous
 AnginaMI <- read_csv("AnginaMI.csv")
 AnginaMI %>%
-  ggplot(aes(y=CreatineKinase,x=Diagnosis))+
+  ggplot(aes(y = CreatineKinase,x = Diagnosis))+
   geom_boxplot()
 
-reportROC(gold = AnginaMI$DiagnosisCat, predictor = AnginaMI$CreatineKinase,plot=T,positive='l')
+reportROC(gold = AnginaMI$DiagnosisCat, predictor = AnginaMI$CreatineKinase,plot = TRUE, positive = 'l')
 
 # b) boxplot
 AnginaMI %>%
-  ggplot(aes(y=CreatineKinase,x=Diagnosis))+
+  ggplot(aes(y = CreatineKinase, x = Diagnosis))+
   geom_boxplot(outlier.shape = NA)
 
 
 ## 2.b) What would you estimate the PPV and NPV of the test to be if it was 
 ## applied in London, if the prevalence of H. pylori was about 60% there?
+
+
+## Extra Stuff
+getOption("defaultPackages")
+
+# Update packages
+old.packages()
+install.packages("installr")
+library(installr)
+updateR()
+.libPaths()
+
+# Show packages
+installed.packages()
+available.packages()
+
+# Show Libraries
+library()
+lapply(.libPaths(), list.dirs, recursive = FALSE, full.names = FALSE)
+search()

@@ -102,6 +102,8 @@ subNHANES %>%
 # Showing the course script(s)
 browseURL(here("meta_data", "Essential_Medical_Statistics_25_Standardization.pdf"))
 prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
+with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`, 
+                                  stdpop = `Pop85-87`))
 
 
 ## 2. The file `ICU Data.csv` contains age and sex-specific figures for mortality 
@@ -112,7 +114,9 @@ prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
 ## s4be.cochrane.org, but please note there appears to be an error in the
 ## calculation of the total expected number of deaths for the hospital of 
 ## interest on this page.)
-
+ICUdata <- read_csv(here("raw_data", "ICU Data.csv"))
+with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulation, 
+                                 stdcount = StandardDeaths, stdpop = StandardPopulation))
 
 
 ###############################################

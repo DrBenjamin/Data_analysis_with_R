@@ -101,11 +101,13 @@ subNHANES %>%
 ## the 1985-87 period as the standard French population
 # Showing the course script(s)
 browseURL(here("meta_data", "Essential_Medical_Statistics_25_Standardization.pdf"))
+
+# Loading the data
 prosCancer <- read_csv(here("raw_data", "Prostate Cancer.csv"))
+
+# Performing age adjust
 with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`, 
                                   stdpop = `Pop85-87`))
-<<<<<<< HEAD
-=======
 
 # Output: 
 # crude.rate adj.rate        lci        uci 
@@ -117,7 +119,6 @@ with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`,
 # period is applied to the 1985-87 population as the standard population. 
 # The crude and standardized rates of prostate cancer is very similar, 2.38 per 
 # 1000 person-years, suggesting the age structure of the two populations are very similar. 
->>>>>>> refs/remotes/origin/main
 
 
 ## 2. The file `ICU Data.csv` contains age and sex-specific figures for mortality 
@@ -128,12 +129,13 @@ with(prosCancer, ageadjust.direct(count = `PC94-96`, pop = `Pop94-96`,
 ## s4be.cochrane.org, but please note there appears to be an error in the
 ## calculation of the total expected number of deaths for the hospital of 
 ## interest on this page.)
+# Loading the data
 ICUdata <- read_csv(here("raw_data", "ICU Data.csv"))
+
+# Performing age adjust
 with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulation, 
-<<<<<<< HEAD
                                  stdcount = StandardDeaths, stdpop = StandardPopulation))
-=======
-                                     stdcount = StandardDeaths, stdpop = StandardPopulation))
+
 # Output:
 # $sir
 # observed         exp         sir         lci         uci 
@@ -149,7 +151,6 @@ with(ICUdata, ageadjust.indirect(count = HospitalDeaths, pop = HospitalPopulatio
 # than the overall ICU population. Given that the confidence intervals include 1
 # we can conclude that this is not a statistically significant difference.
 
->>>>>>> refs/remotes/origin/main
 
 
 ###############################################

@@ -12,7 +12,7 @@ library(here)
 
 ## Data Input
 # Assumes working directory correctly set prior to this step
-Lead <- read_csv("LeadAb.csv")
+Lead <- read_csv(here("raw_data", "LeadAb.csv"))
 
 # Read Course script
 browseURL(here("meta_data", "LEAD_example.pdf"))

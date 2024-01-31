@@ -1,0 +1,267 @@
+---
+title: "LEAD example"
+author: "Niall Anderson"
+date: "2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is an example of a R Markdown document you could use to carry out an analysis. If using this template to write a report of your findings, you might want to structure it a little differently. For example, you could choose to hide the R code for the preamble, data check and data preparation and some of the Exploratory Data Analysis, to keep only sections such as:
+
+* Introduction
+* Materials and Methods
+* Results -- This could have the R outputs displayed but the R code hidden
+* Discussion
+* Conclusion
+
+Or any other structure!
+
+# Preamble R code
+```{r preamble}
+# Load the packages
+pacman::p_load(tidyverse, finalfit)
+
+# Import the dataset
+Lead <- read_csv(here("raw_data", "LeadAb.csv"))
+```
+# Data checking
+It can be useful to inspect the data by eye, you can often spot rogue values, data entry issues, etc.
+
+```{r dataCheck}
+# View the dataset in RStudio
+view(Lead)
+# Get summary statistics for all variables
+summary(Lead)       
+```
+
+It's a useful quick summary of a data set, it will point out NA frequency etc. We can check whether we get the expected range for categorical variables (e.g. the Codebook says 1,2 but seeing 3, 4, 99 as well, etc.).
+
+# Data preparation
+We will convert the categorical variables to factors. As levels for these variables are listed in numerical order (0, 1, 2, etc.), we can use the Codebook to replace those by more meaningful factor levels. This is useful to check level frequencies, etc. For this step, we will create a new working tibble, named Leadw, so that the original data is untouched. This allows to go back to the Lead object if there is a mistake in Leadw.
+
+```{r dataPrep}
+# Convert categorical variables to factors
+# Create a working data frame (adding a suffix "w")
+Leadw <- Lead %>%
+  mutate(
+    school = factor(school),
+    sex = factor(sex, labels = c("Male", "Female")),
+    moveschl = factor(moveschl, labels = c("No", "Yes")),
+    classyr = factor(classyr, labels = c("Primary 3", "Primary 4")),
+    timeday = factor(timeday, labels = c("AM", "PM")),
+    handed = factor(handed, labels = c("Right", "Left")),
+    msoc = factor(msoc),
+    fsoc = factor(fsoc),
+    mqualif = factor(
+      mqualif,
+      labels = c("None", "Apprentice", "School", "Higher School", "FE", "Degree")
+    ),
+    fqualif = factor(
+      fqualif,
+      labels = c("None", "Apprentice", "School", "Higher School", "FE", "Degree")
+    ),
+    unempl = factor(unempl, labels = c("Yes", "No")),
+    workmum = factor(workmum, labels = c("No", "PT", "FT")),
+    carphone = factor(carphone, labels = c("Neither", "Only 1", "Both")),
+    gestat = factor(gestat, labels = c("38 Weeks+", "34-37 Weeks", "<34 Weeks")),
+    brthwt = factor(brthwt, labels = c("No", "Yes")),
+    medhist = factor(medhist, labels = c("No", "Yes"))
+  )
+
+# Check the summary statistics of the transformed dataset  
+summary(Leadw)
+```
+
+It is useful to check the recoding and look for categories that have very low frequencies - e.g. moveschl and unempl might not be very helpful as 1 category very small.
+In general, there is likely more to do here, but this is quite a clean data set, so can move on.
+
+# Exploratory Data Analysis
+We're interested in possible relationships between sex, classyr, msoc (categorical) and bloodpb, ageint, famhist (continuous) on abscore, the educational attainment score for each child.
+We will use quite basic plots here for now, you might want to improve some of these for reporting purposes, but that's not necessary for basic checks at this stage.
+
+## Exploration of the abscore variable
+First we can look at the overall distribution of the abscore variable.
+
+```{r exploreAbscore}
+# Overall distribution of abscore
+Leadw %>%
+  ggplot(aes(x = abscore)) +
+  geom_histogram(bins = 20, colour = "blue")
+```
+
+## Look at abscore by each of the categorical variables
+Now we can look at the distribution of abscore separated by each of the categorical variables, using grapical and numerical methods.
+
+### sex variable
+
+```{r abscoreSex}
+Leadw %>%
+  ggplot(aes(y = abscore, x = sex)) +
+  geom_boxplot()
+Leadw %>%
+  group_by(sex) %>%
+  summarize(
+    min = min(abscore),
+    mean = mean(abscore),
+    median = median(abscore),
+    max = max(abscore),
+    SD = sd(abscore)
+  )
+```
+
+### classyr variable
+
+```{r abscoreClassyr}
+Leadw %>%
+  ggplot(aes(y = abscore, x = classyr)) +
+  geom_boxplot()
+Leadw %>%
+  group_by(classyr) %>%
+  summarize(
+    min = min(abscore),
+    mean = mean(abscore),
+    median = median(abscore),
+    max = max(abscore),
+    SD = sd(abscore)
+  )
+```
+
+### msoc variable
+
+```{r abscoreMsoc}
+Leadw %>%
+  ggplot(aes(y = abscore, x = msoc)) +
+  geom_boxplot()
+Leadw %>%
+  group_by(msoc) %>%
+  summarize(
+    min = min(abscore),
+    mean = mean(abscore),
+    median = median(abscore),
+    max = max(abscore),
+    SD = sd(abscore)
+  )
+```
+
+## Look at individual continuous variables of interest
+Then we can look at the overall distribution of each continuous variable of interest.
+
+```{r bloodbp}
+Leadw %>%
+  ggplot(aes(x = bloodpb)) +
+  geom_histogram(bins = 20, colour = "blue")
+```
+There is some positive skewness here (not unusually for this type of lab measurement). It may be easier to look at this on a transformed scale?
+```{r transformBloodbp}
+Leadw %>%
+  ggplot(aes(x = log(bloodpb))) +
+  geom_histogram(bins = 20, colour = "blue")
+Leadw %>%
+  ggplot(aes(x = sqrt(bloodpb))) +
+  geom_histogram(bins = 20, colour = "blue")
+```
+
+The square root scale may be a reasonable choice to make relationships easier to see.
+
+```{r ageint}
+Leadw %>%
+  ggplot(aes(x = ageint)) +
+  geom_histogram(bins = 20, colour = "blue")
+```
+
+```{r famhist}
+Leadw %>%
+  ggplot(aes(x = famhist)) +
+  geom_histogram(bins = 20, colour = "blue")
+```
+
+Here we note the irregular distribution, there are lots of cases with no family disruption, and zero or a small number of cases for some categories of family disruption. It would likely better be replaced by a classification of "None versus Some". We can move this variable into the categorical group for analysis.
+
+```{r famhistCat}
+Leadw <- Leadw %>%
+  mutate(famhistbin = famhist != 0)    # Create Boolean variable - T = score of 1 or more, F = score of 0
+```
+
+We've now created a new Boolean variable named famihistbin, which is TRUE if famhist has a score of 1 or more, and FALSE if famhist has a score of 0.
+
+## Look at scatterplots of continuous variables against abscore
+
+```{r abscoreBloodbp}
+Leadw %>%
+  ggplot(aes(y = abscore, x = sqrt(bloodpb))) +
+  geom_point()
+```
+
+A lower abscore seems to be associated with higher blood lead.
+
+```{r abscoreAgeint}
+Leadw %>%
+  ggplot(aes(y = abscore, x = ageint)) +
+  geom_point()
+```
+
+This plot is slightly difficult to interpret, we will need some quantification to really see if there is any relationship.
+
+# Develop the Analysis Plan
+This requires thinking time, it happens off-line, but we will need to think about the data types, the structure of the problem, etc. Here we can use t-tests to assess abscore vs categorical variables. msoc would need to use a 1-way ANOVA (discussed later, so leave for now).
+The association between abscore and the continuous variables can be assessed by correlation coefficient, and later we would start using regression models, etc. to do more complex multifactorial investigation.
+
+# Investigate Assumptions
+We can see SDs for abscore in different groups from above, so we just need to add Q_Q plots here.
+
+```{r QQabscoreSex}
+Leadw %>%
+  ggplot(aes(sample = abscore)) +
+  stat_qq() +
+  stat_qq_line(color = 2) +
+  facet_grid(cols = vars(sex))
+```
+
+```{r QQabscoreClassyr}
+Leadw %>%
+  ggplot(aes(sample = abscore)) +
+  stat_qq() +
+  stat_qq_line(color = 2) +
+  facet_grid(cols = vars(classyr))
+```
+
+```{r QQabscoreFamhistbin}
+Leadw %>%
+  ggplot(aes(sample = abscore)) +
+  stat_qq() +
+  stat_qq_line(color = 2) +
+  facet_grid(cols = vars(famhistbin))
+```
+
+The above sets of plots look reasonably Normal, so there are no particular concerns regarding the t-test assumptions. The poorest fir to the normal distribution is the smaller group of children with family history of disruption. This is expected as smaller samples have more noisy data, so we are less concerned about this.
+
+# Carry Out Analysis
+
+## t-tests
+
+```{r ttests}
+Leadw %>% t.test(.$abscore ~ .$sex, data = .)
+Leadw %>% t.test(.$abscore ~ .$classyr, data = .)
+Leadw %>% t.test(.$abscore ~ .$famhistbin, data = .)
+```
+
+We can omit the ANOVA for msoc for now.
+
+## Correlation tests
+
+```{r cortests}
+with(Leadw, cor(abscore, sqrt(bloodpb)))  # Simple base R function - easier to use directly here, rather than piping
+with(Leadw, cor(abscore, ageint))  
+```
+
+Both bloodpb and age seem to be associated with decreasing abscore, which is interesting.
+More analysis will likely continue from here.
+
+# Interpretation
+Here you will interpret the results of each method and plot and explain how they answer the questions.
+
+# Conclusions
+This is an overall conclusion of all the findings, probably highlighting the bigger effects found.

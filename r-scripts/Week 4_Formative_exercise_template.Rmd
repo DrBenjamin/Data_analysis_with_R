@@ -1,0 +1,68 @@
+---
+title: "Formative exercise template"
+author: "Student full name"
+date: '2024'
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The Research Context
+The German Breast Cancer Study Group recruited 686 women with node positive breast cancer into a cohort study in the late 1980’s. The women were assessed for a number of possible risk factors (age, menopausal status, treatment with Tamoxifen, number of nodes involved, tumour grade and tumour size) and were then followed up for a median period of 5 years. At the end of follow-up, the participants’ mortality status was determined (dead or alive). The Study Group was interested in determining whether any of these possible prognostic factors would be helpful in predicting mortality outcomes for this category of breast cancer patient in future.
+
+# Project Goals
+The data for these 686 women can be found in the comma-separated values format file **Breast cancer data.csv**. Use these data to investigate the following questions, and write a report summarising your findings:
+
+1.	Do any of the risk factors measured appear to be associated individually with mortality at the end of follow-up?
+
+2.	What are the odds of dying in the following subgroups?
+•	Tamoxifen-treated versus No Tamoxifen treatment
+•	Tumour Grade 1 versus Tumour Grades 2 and 3
+
+
+# Preamble R code
+```{r preamble}
+# Enter R code to load packages and import data here
+```
+
+# Question 1: Do any of the risk factors measured appear to be associated individually with mortality at the end of follow-up?
+## Justification of your choice of statistical / graphical methods
+Explain how you selected your methods.
+
+## R code and output
+```{r question1}
+# Enter R code here
+
+```
+
+## Interpretation
+Explain what your results show and how they answer the question.
+
+# Question 2.A. What are the odds of dying in the Tamoxifen-treated versus No Tamoxifen treatment subgroups?
+## Justification of your choice of statistical / graphical methods
+Explain how you selected your methods.
+
+## R code and output
+```{r question2A}
+# Enter R code here
+
+```
+
+## Interpretation
+Explain what your results show and how they answer the question.
+
+# Question 2.B. What are the odds of dying in the Tumour Grade 1 versus Tumour Grades 2 and 3 subgroups?
+## Justification of your choice of statistical / graphical methods
+Explain how you selected your methods.
+
+## R code and output
+```{r question2B}
+# Enter R code here
+
+```
+
+## Interpretation
+Explain what your results show and how they answer the question.

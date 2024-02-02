@@ -22,7 +22,7 @@ Or any other structure!
 # Preamble R code
 ```{r preamble}
 # Load the packages
-pacman::p_load(tidyverse, finalfit)
+pacman::p_load(tidyverse, finalfit, here)
 
 # Import the dataset
 Lead <- read_csv(here("raw_data", "LeadAb.csv"))
@@ -93,7 +93,7 @@ Leadw %>%
 ```
 
 ## Look at abscore by each of the categorical variables
-Now we can look at the distribution of abscore separated by each of the categorical variables, using grapical and numerical methods.
+Now we can look at the distribution of abscore separated by each of the categorical variables, using graphical and numerical methods.
 
 ### sex variable
 

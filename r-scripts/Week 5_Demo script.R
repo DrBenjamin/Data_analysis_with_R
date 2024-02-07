@@ -22,15 +22,24 @@ Liver <- read_csv(here("raw_data", "Liver.csv"))
 Liver <- Liver %>%
   mutate(outcome = factor(outcome, labels = c("Alive", "Dead")))
 
-# For now, bypass the usual data analysis process steps of checking, exploration etc -
-# assume we have reached the model building stage...
+# For now, bypass the usual data analysis process steps of checking, exploration 
+# etc - assume we have reached the model building stage. The method `glm` is 
+# the generalised linear model function, which can be used for logistic regression.
 Liver.lr <-
   glm(outcome ~ log_bil + log_icg,
       data = Liver,
       family = binomial("logit"))
-summary(Liver.lr) # Shows model parameters etc, but NOT ORs - need to extract the coefficients and back-transform them...
+
+# Showing model parameters etc, but NOT Odd Ratio (ORs) - 
+# need to extract the coefficients and back-transform them
+summary(Liver.lr) 
+
+# Extracting the coefficients and back-transforming them to ORs
 exp(cbind(OR = Liver.lr$coeff, confint(Liver.lr)))
-anova(Liver.lr, test = "Chisq")   # Print out the Analysis of Deviance table - both explanatory variables contribute strongly
+
+# Printing out the Analysis of Deviance table - both explanatory variables
+# contribute strongly
+anova(Liver.lr, test = "Chisq")
 
 
 #### Example of conditional logistic regression, with 1:1 matching
@@ -49,7 +58,8 @@ LBW <- LBW %>%
     ethnic = factor(ethnic)
   )
 
-LBW # Check the tibble to see that above has worked.
+# Checking the tibble to see that above has worked
+LBW
 
 # The clogit function fits a conditional logistic regression model
 # (via a call to coxph) with relatively little setting up - the model
@@ -57,8 +67,12 @@ LBW # Check the tibble to see that above has worked.
 # just case/control status) but with a strata() term to include
 # the matching variable.
 
+# Seeing model output, parameter estimates, ORs etc
 LBW.clr <- clogit(low ~ smoke + ht + ptd + strata(pair), data = LBW)
-summary(LBW.clr) # To see model output, parameter estimates, ORs etc
-anova(LBW.clr)  # Generates an Analysis of Deviance table, to see the contribution of the 3 explanatory variables in predicting outcome.
+summary(LBW.clr)
+
+# Generating an Analysis of Deviance table, to see the contribution 
+# of the 3 explanatory variables in predicting outcome
+anova(LBW.clr)
 
 # summary command also prints out ORs (listed as exp(coef)) and 95% CI (lower .95 and upper .95), so little else needed for now.

@@ -1,3 +1,9 @@
+### Course "Data analysis with R"
+### Week 4
+## Libraries
+library(forcats)
+library(tidyverse)
+
 # Let's create a vector named colors made of colour names. What class is the colors vector?
 colors <- c("red","blue","green","green","red","blue","red","green","blue")
 # 1. Transform the colors vector into a factor and store it into a vector called colors_fct.
@@ -7,8 +13,6 @@ colors <- c("red","blue","green","green","red","blue","red","green","blue")
 # 5. What are the levels of colors_fct now?
 # 6. Onto the Tidyverse (forcats) methods! Let's create a tibble named colTib with a variable named colours made of the colors_fct vector
 # 7. Transform (recode…) the levels of the colours_fct variable so the colours start with an uppercase letter.
-library(forcats)
-library(tidyverse)
 
 # 1.
 colors_fct <- factor(colors)
@@ -35,5 +39,3 @@ str(colTib)
 colTib <- colTib %>%
   mutate(colours = fct_recode(colours, "Red" = "red", "Blue" = "blue", "Green" = "green"))
 
-
-  

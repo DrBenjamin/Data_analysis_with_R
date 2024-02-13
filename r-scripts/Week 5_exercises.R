@@ -48,7 +48,7 @@ apoe %>%
 #
 # Interpretation:
 # Among the 30 / 93 patients who had the allele, 57% had unfavorable outcome after 
-# injury. Among the 63/90 patients who did not have the allele, 25% had the 
+# injury. Among the 63 / 90 patients who did not have the allele, 25% had the 
 # unfavorable outcome. Hence there appears to be a positive association between 
 # the exposure variable and the outcome variable.
 
@@ -90,7 +90,18 @@ summary(apoe.lr)
 # This influence is statistically significant since the p-value is <0.05.
 
 # Extracting the coefficients and back-transforming them to ORs
-exp(cbind(OR = apoe.lr$gosfav_outcome, confint(apoe.lr)))
+# because otherwise it would be the logs values
+exp(cbind(OR = apoe.lr$coeff, confint(apoe.lr)))
+
+# Results:
+#                   OR     2.5 %    97.5 %
+# (Intercept) 0.3404255 0.1871985 0.5869877
+# apoe_e4Yes  3.8413462 1.5524234 9.8390139
+#
+# Interpretation:
+# The confidence interval is quite wide (but not including 1).
+# The Odds Ration says that people who have the 
+# 3.8 times higher than without the allele
 
 # Printing out the Analysis of Deviance table - both explanatory variables
 # contribute strongly
@@ -108,7 +119,7 @@ anova(apoe.lr, test = "Chisq")
 # the same (parameter = 0). Since the the p-value is <0.05, the null hypothesis
 # can be rejected.
 #
-## Conslusion:
+## Conclusion:
 # The presence of allele ApoE e4 allele are associated with greater probabilities 
 # of experiencing unfavorable outcome after an acute head injury.
 
@@ -127,6 +138,16 @@ browseURL(here("meta_data", "Codebook for LowBirthWt13 data.pdf"))
 # Loading data
 low_birth_wt <- read_csv(here("raw_data", "LowBirthWt13.csv"))
 
+# Viewing data
+View(low_birth_wt)
+str(low_birth_wt)
+
+# Setting up `smoking`, `ht` and `ptd` as factors
+low_birth_wt <- low_birth_wt %>%
+  mutate(smoke = factor(smoke, labels = c("No", "Yes"))) %>%
+  mutate(ht = factor(ht, labels = c("No", "Yes"))) %>%
+  mutate(ptd = factor(ptd, labels = c("No", "Yes")))
+  
 
 ## Post results from one of these 4 questions (A.1, A.2, A.3 or B) on the
 ## discussion board for your group.

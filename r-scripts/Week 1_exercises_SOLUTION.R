@@ -5,30 +5,35 @@ library(NHANES)
 # Using the same dataset as in this week's worked examples,
 # we will explore some different variables.
 
+
+
 #####################################################
 # 1. Create a plot to explore the distribution of   #
 #    the Weight variable for individuals aged 18 or #
 #    over, separating male and female individuals.  #
 #####################################################
 # Option 1
-NHANES %>% filter(Age>=18 & Gender == "female") %>%
+NHANES %>% filter(Age >= 18 & Gender == "female") %>%
   drop_na(Weight) %>%
-  ggplot(aes(x=Weight)) + 
-  geom_histogram(aes(y=after_stat(density), fill=after_stat(count)),bins=30) +
-  geom_density(aes(y=after_stat(density)))
+  ggplot(aes(x = Weight)) +
+  geom_histogram(aes(y = after_stat(density), fill = after_stat(count)), bins =
+                   30) +
+  geom_density(aes(y = after_stat(density)))
 
-NHANES %>% filter(Age>=18 & Gender == "male") %>% 
+NHANES %>% filter(Age >= 18 & Gender == "male") %>%
   drop_na(Weight) %>%
-  ggplot(aes(x=Weight)) + 
-  geom_histogram(aes(y=after_stat(density), fill=after_stat(count)),bins=30) +
-  geom_density(aes(y=after_stat(density)))
+  ggplot(aes(x = Weight)) +
+  geom_histogram(aes(y = after_stat(density), fill = after_stat(count)), bins =
+                   30) +
+  geom_density(aes(y = after_stat(density)))
 
 # Option 2
-NHANES %>% filter(Age>=18) %>%
+NHANES %>% filter(Age >= 18) %>%
   drop_na(Weight) %>%
-  ggplot(aes(x=Weight)) + 
-  geom_histogram(aes(y=after_stat(density), fill=after_stat(count)),bins=30) +
-  geom_density(aes(y=after_stat(density))) +
+  ggplot(aes(x = Weight)) +
+  geom_histogram(aes(y = after_stat(density), fill = after_stat(count)), bins =
+                   30) +
+  geom_density(aes(y = after_stat(density))) +
   facet_grid(rows = vars(Gender))
 
 # Bonus option
@@ -36,18 +41,20 @@ NHANES %>% filter(Age>=18) %>%
 library(cowplot)
 
 plotFemale <- NHANES %>%
-  filter(Age>=18 & Gender == "female") %>%
+  filter(Age >= 18 & Gender == "female") %>%
   drop_na(Weight) %>%
-  ggplot(aes(x=Weight)) + 
-  geom_histogram(aes(y=after_stat(density), fill=after_stat(count)),bins=30) +
-  geom_density(aes(y=after_stat(density))) +
+  ggplot(aes(x = Weight)) +
+  geom_histogram(aes(y = after_stat(density), fill = after_stat(count)), bins =
+                   30) +
+  geom_density(aes(y = after_stat(density))) +
   theme_bw()
 
-plotMale <- NHANES %>% filter(Age>=18 & Gender == "male") %>%
+plotMale <- NHANES %>% filter(Age >= 18 & Gender == "male") %>%
   drop_na(Weight) +
-  ggplot(aes(x=Weight)) + 
-  geom_histogram(aes(y=after_stat(density), fill=after_stat(count)),bins=30) +
-  geom_density(aes(y=after_stat(density))) +
+  ggplot(aes(x = Weight)) +
+  geom_histogram(aes(y = after_stat(density), fill = after_stat(count)), bins =
+                   30) +
+  geom_density(aes(y = after_stat(density))) +
   theme_bw()
 
 plot_grid(plotFemale, plotMale, labels = "AUTO")
@@ -55,18 +62,20 @@ plot_grid(plotFemale, plotMale, labels = "AUTO")
 # Option 3
 NHANES %>% filter(Age >= 18) %>%
   drop_na(Weight) %>%
-  ggplot(aes(x=Weight, colour = Gender)) + 
+  ggplot(aes(x = Weight, colour = Gender)) +
   geom_freqpoly(binwidth = 1.4)
 
 # Option 4
 NHANES %>%
   filter(Age >= 18) %>%
   drop_na(Weight) %>%
-  ggplot(aes(x=Gender, y=Weight, color=Gender)) +
+  ggplot(aes(x = Gender, y = Weight, color = Gender)) +
   geom_boxplot() +
-  scale_color_brewer(palette="Dark2") +
+  scale_color_brewer(palette = "Dark2") +
   labs(title = 'Weight distribution for adult male and female individuals',
-       y='Weight (kg)',x='Gender')
+       y = 'Weight (kg)', x = 'Gender')
+
+
 
 #####################################################
 # 2. Create a plot to explore the covariation       #
@@ -74,15 +83,14 @@ NHANES %>%
 #    female individuals aged 50 and over,           #
 #    separating by Diabetes status.                 #
 #####################################################
-
 NHANES %>%
   filter(Age >= 50 & Gender == "female") %>%
   drop_na(Diabetes, BMI, BPSys1) %>%
   ggplot(aes(x = BMI, y = BPSys1, color = Diabetes)) +
-  geom_point() + 
-  geom_smooth(method=lm) +
-  scale_color_brewer(palette="Set3") + 
-  xlab("BMI") + 
+  geom_point() +
+  geom_smooth(method = lm) +
+  scale_color_brewer(palette = "Set3") +
+  xlab("BMI") +
   ylab("Systolic blood pressure (mm Hg)")
 
 # Option 2
@@ -90,11 +98,12 @@ NHANES %>%
   filter(Age >= 50 & Gender == "female") %>%
   drop_na(Diabetes, BMI, BPSys1) %>%
   ggplot(aes(x = BMI, y = BPSys1)) +
-  geom_point() + 
-  geom_smooth(method=lm) +
+  geom_point() +
+  geom_smooth(method = lm) +
   facet_grid(rows = vars(Diabetes)) +
-  xlab("BMI") + 
+  xlab("BMI") +
   ylab("Systolic blood pressure (mm Hg)")
+
 
 
 #####################################################
@@ -103,12 +112,16 @@ NHANES %>%
 #    aged 50 and over, separating by Education.     #
 #    We want the mean and median for each variable. #                                   #
 #####################################################
-
-NHANES %>% 
+NHANES %>%
   filter(Gender == "female", Age >= 50) %>%
   select(BMI, DirectChol, HHIncomeMid, Education) %>%
   drop_na(BMI, DirectChol, HHIncomeMid, Education) %>%
   group_by(Education) %>%
-  summarise(meanBMI = mean(BMI), medianBMI = median(BMI),
-            meanChol = mean(DirectChol), medianChol = median(DirectChol),
-            meanHHIncome = mean(HHIncomeMid), medianHHIncome = median(HHIncomeMid))
+  summarise(
+    meanBMI = mean(BMI),
+    medianBMI = median(BMI),
+    meanChol = mean(DirectChol),
+    medianChol = median(DirectChol),
+    meanHHIncome = mean(HHIncomeMid),
+    medianHHIncome = median(HHIncomeMid)
+  )

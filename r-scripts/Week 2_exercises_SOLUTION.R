@@ -18,7 +18,7 @@ crosstab <- NHANES %>%
   select(Education,Work)
 
 crosstab %>%
-  summary_factorlist(dependent ="Work",explanatory = "Education",column = F,total_col = T)
+  summary_factorlist(dependent = "Work", explanatory = "Education", column = F,total_col = T)
 
 # Tidyverse option
 crosstab %>%

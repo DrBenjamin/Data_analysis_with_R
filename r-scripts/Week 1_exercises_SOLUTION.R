@@ -110,7 +110,7 @@ NHANES %>%
 # 3. Create a tibble for the BMI, DirectChol, and   #
 #    HHIncomeMid variables for female individuals   #
 #    aged 50 and over, separating by Education.     #
-#    We want the mean and median for each variable. #                                   #
+#    We want the mean and median for each variable. #                                   
 #####################################################
 NHANES %>%
   filter(Gender == "female", Age >= 50) %>%

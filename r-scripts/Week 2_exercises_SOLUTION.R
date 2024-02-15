@@ -22,12 +22,12 @@ crosstab %>%
 
 # Tidyverse option
 crosstab %>%
-  count(Education,Work) %>%
-  # The argument fill=0 in the spread function replaces NA caused by value 
+  count(Education, Work) %>%
+  # The argument fill=0 in the spread function replaces NA caused by value
   # combinations without any observations by 0
-  spread(Work,n,fill=0) %>%  
+  spread(Work, n, fill = 0) %>%
   select(-Education) %>%
-  #fisher.test() or 
+  #fisher.test() or
   chisq.test() %>%
   .$expected
 

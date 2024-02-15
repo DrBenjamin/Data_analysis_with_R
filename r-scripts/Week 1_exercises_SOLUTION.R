@@ -87,22 +87,22 @@ NHANES %>%
   filter(Age >= 50 & Gender == "female") %>%
   drop_na(Diabetes, BMI, BPSys1) %>%
   ggplot(aes(x = BMI, y = BPSys1, color = Diabetes)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  scale_color_brewer(palette = "Set3") +
-  xlab("BMI") +
-  ylab("Systolic blood pressure (mm Hg)")
+    geom_point() +
+    geom_smooth(method = lm) +
+    scale_color_brewer(palette = "Set3") +
+    xlab("BMI") +
+    ylab("Systolic blood pressure (mm Hg)")
 
 # Option 2
 NHANES %>%
   filter(Age >= 50 & Gender == "female") %>%
   drop_na(Diabetes, BMI, BPSys1) %>%
   ggplot(aes(x = BMI, y = BPSys1)) +
-  geom_point() +
-  geom_smooth(method = lm) +
-  facet_grid(rows = vars(Diabetes)) +
-  xlab("BMI") +
-  ylab("Systolic blood pressure (mm Hg)")
+    geom_point() +
+    geom_smooth(method = lm) +
+    facet_grid(rows = vars(Diabetes)) +
+    xlab("BMI") +
+    ylab("Systolic blood pressure (mm Hg)")
 
 
 

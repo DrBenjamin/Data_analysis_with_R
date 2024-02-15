@@ -78,7 +78,6 @@ subtib2 %>%
 #################################
 #        Chi-square test        #
 #################################
-
 # Perform the chi-square test on subtib1
 subtib1 %>%
   table() %>%
@@ -110,7 +109,6 @@ subtib1 %>%
 #################################
 #      Fisher's exact test      #
 #################################
-
 # Perform Fisher's exact test on subtib2
 subtib2 %>%
   table() %>%
